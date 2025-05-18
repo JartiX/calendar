@@ -1,0 +1,242 @@
+/**
+ * Основные стили для всего приложения
+ */
+body {
+    padding-top: 20px;
+    padding-bottom: 40px;
+    background-color: #f8f9fa;
+}
+
+.header {
+    margin-bottom: 30px;
+}
+
+.task-item {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.task-item:hover {
+    background-color: #f8f9fa;
+}
+
+.add-task-form, 
+.task-list, 
+.search-section {
+    margin-bottom: 30px;
+}
+
+/* Стили для навигационных вкладок */
+.nav-tabs .nav-link {
+    border: 1px solid #dee2e6;
+    border-top-left-radius: .25rem;
+    border-top-right-radius: .25rem;
+    margin-right: 5px;
+}
+
+.nav-tabs .nav-link.active {
+    border-bottom-color: transparent;
+}
+
+.tab-content {
+    border: 1px solid #dee2e6;
+    border-top: none;
+    padding: 20px;
+    background-color: #fff;
+}
+
+/* Стили для уведомлений */
+.toast-container {
+    position: fixed;
+    bottom: 15px;
+    right: 15px;
+    z-index: 1050;
+}
+
+.toast {
+    min-width: 250px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin-bottom: 10px;
+    opacity: 0.95;
+}
+
+.toast:hover {
+    opacity: 1;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.bg-success {
+    background-color: #28a745 !important;
+}
+
+.bg-danger {
+    background-color: #dc3545 !important;
+}
+
+.bg-warning {
+    background-color: #ffc107 !important;
+    color: #343a40 !important;
+}
+
+.bg-info {
+    background-color: #17a2b8 !important;
+}
+
+.toast .toast-body {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    gap: 10px;
+}
+
+.toast .btn-close {
+    padding: 10px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+/* Стили для карточек */
+.card {
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+}
+
+.card-header {
+    background-color: rgba(0, 0, 0, 0.02);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Глобальный отзывчивый контейнер */
+.container {
+    max-width: 1200px;
+    padding: 0 15px;
+}
+
+/* Стили для форм */
+.form-control:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Стили для подсказок */
+.tooltip {
+    position: absolute;
+    z-index: 1070;
+    display: block;
+    font-family: var(--bs-font-sans-serif);
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.5;
+    text-align: left;
+    text-align: start;
+    text-decoration: none;
+    text-shadow: none;
+    text-transform: none;
+    letter-spacing: normal;
+    word-break: normal;
+    word-spacing: normal;
+    white-space: normal;
+    line-break: auto;
+    font-size: 0.875rem;
+    word-wrap: break-word;
+    opacity: 0;
+}
+
+.tooltip.show {
+    opacity: 0.9;
+}
+
+.btn-group {
+    display: inline;
+}
+
+/* Стили для вкладки личного кабинета */
+/* Профиль пользователя */
+.profile-section h4 {
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.5rem;
+}
+
+.profile-image {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin-bottom: 1rem;
+    object-fit: cover;
+}
+
+/* Красивое отображение статистики */
+.task-stat {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.task-stat i {
+    font-size: 2rem;
+    margin-right: 1rem;
+}
+
+.task-stat .stat-count {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+/* Стили для форм редактирования */
+.profile-edit-form, .password-change-form {
+    padding: 1.5rem;
+    background-color: #f8f9fa;
+    border-radius: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Стили для фильтров */
+/* CSS для активных фильтров - добавить в ваш CSS файл */
+.active-filters {
+    padding: 8px 12px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+.active-filters .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 10px;
+    font-size: 0.85rem;
+    margin-right: 5px;
+}
+
+.active-filters .badge a {
+    text-decoration: none;
+    margin-left: 5px;
+}
+
+.active-filters .badge a:hover {
+    opacity: 0.8;
+}
+
+.active-filters .btn-sm {
+    padding: 3px 8px;
+    font-size: 0.85rem;
+    margin-left: 10px;
+}
+
+.form-select.has-value {
+    font-weight: bold;
+}
+.form-select option[selected] {
+    font-weight: bold;
+}
+#statusFilterForm .form-select,
+#priorityFilterForm .form-select {
+    transition: all 0.3s ease;
+}

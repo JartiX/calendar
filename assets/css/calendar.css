@@ -1,0 +1,219 @@
+/* Основные стили календаря */
+.calendar-table {
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.calendar-table th {
+    text-align: center;
+    width: 14.28%;
+    padding: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+}
+
+.calendar-table th.weekend {
+    color: #dc3545;
+}
+
+.calendar-table td {
+    height: 120px;
+    vertical-align: top;
+    padding: 5px;
+    border: 1px solid #dee2e6;
+    position: relative;
+    transition: background-color 0.2s;
+    cursor: pointer;
+}
+
+.calendar-table td:hover {
+    background-color: #e9e9e9;
+}
+
+
+.calendar-table .other-month {
+    background-color: #f8f9fa;
+}
+
+
+.calendar-table .other-month .day-number {
+    color: #adb5bd;
+}
+
+.calendar-table .today {
+    background-color: #e9f5ff;
+}
+
+.calendar-table .today:hover {
+    background-color: #d7edff;
+}
+
+.calendar-table .today .day-number {
+    color: #007bff;
+    font-weight: bold;
+}
+
+
+/* Стили для номера дня */
+.day-number {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    font-size: 0.9rem;
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    border-bottom: 1px dashed #eee;
+}
+
+.task-count {
+    display: inline-flex;
+    margin-left: 5px;
+    justify-content: center;
+    align-items: center;
+    width: 20px;
+    height: 20px;
+    background-color: #007bff;
+    color: white;
+    border-radius: 50%;
+    font-size: 0.7rem;
+    font-weight: normal;
+}
+
+.add-task-icon {
+    color: #6c757d;
+    opacity: 0.5;
+    cursor: pointer;
+    margin-left: auto;
+    transition: opacity 0.2s, color 0.2s;
+    font-size: 14px;
+}
+
+.add-task-icon:hover {
+    opacity: 1;
+    color: #28a745;
+}
+
+.calendar-table td:hover .add-task-icon {
+    opacity: 1;
+}
+
+/* Стили для списка задач в ячейке */
+.tasks-container {
+    max-height: 85px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    position: relative;
+}
+
+/* Стилизация скроллбара для Webkit (Chrome, Safari) */
+.tasks-container::-webkit-scrollbar {
+    width: 4px;
+}
+
+.tasks-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.tasks-container::-webkit-scrollbar-thumb {
+    background: #ccc;
+}
+
+.tasks-container::-webkit-scrollbar-thumb:hover {
+    background: #aaa;
+}
+
+/* Стили для карточки задачи */
+.task-item-calendar {
+    padding: 4px 6px 4px 8px;
+    margin-bottom: 5px;
+    font-size: 12px;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.task-item-calendar:hover {
+    background-color: #f8f9fa;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+}
+
+.task-time {
+    font-weight: bold;
+    font-size: 10px;
+    color: #495057;
+}
+
+.task-title {
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Кнопка "Ещё задачи" */
+.more-tasks {
+    text-align: center;
+    padding: 3px;
+    background-color: #f8f9fa;
+    color: #6c757d;
+    border-radius: 4px;
+    font-size: 11px;
+    cursor: pointer;
+    margin-top: 2px;
+}
+
+.more-tasks:hover {
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+/* Медиа-запросы для адаптивности */
+@media (max-width: 992px) {
+    .calendar-table td {
+        height: 100px;
+    }
+}
+
+@media (max-width: 768px) {
+    .day-number {
+        font-size: 0.8rem;
+    }
+    
+    .tasks-container {
+        max-height: 70px;
+    }
+    
+    .task-item-calendar {
+        padding: 3px 5px;
+        font-size: 11px;
+    }
+}
+
+@media (max-width: 576px) {
+    .calendar-table th {
+        font-size: 0.7rem;
+        padding: 5px;
+    }
+    
+    .calendar-table td {
+        height: 80px;
+        padding: 3px;
+    }
+    
+    .task-item-calendar {
+        margin-bottom: 3px;
+    }
+    
+    .tasks-container {
+        max-height: 55px;
+    }
+}
