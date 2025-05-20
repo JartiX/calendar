@@ -5,7 +5,7 @@
  * Управляет подключением к базе данных и предоставляет соединение
  */
 
-require_once __DIR__ . 'db_credentials.php';
+require_once 'config/db_credentials.php';
 
 class Database {
     // Параметры подключения

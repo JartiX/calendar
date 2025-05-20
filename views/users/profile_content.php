@@ -6,6 +6,9 @@
  * как на отдельной странице, так и в виде вкладки
  */
 
+require_once 'models/telegram_user.php';
+require_once 'controllers/telegram_controller.php';
+
 // Проверяем, был ли передан флаг о том, что включение происходит во вкладке
 $isIncludedInTab = isset($includeProfileInTab) && $includeProfileInTab === true;
 
@@ -157,5 +160,70 @@ if (!isset($user_data) || !$user_data) {
                 </form>
             </div>
         </div>
+
+        <!-- Управление Telegram -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3><i class="fab fa-telegram"></i> Подключение Telegram</h3>
+            </div>
+            <div class="card-body">
+                <?php 
+                $telegramController = new TelegramController($db);
+                
+                // Проверяем, подключен ли Telegram
+                $isConnected = $telegramController->isConnected($_SESSION['user_id']);
+                
+                if ($isConnected) {
+                    //  Получаем информацию о подключении
+                    $connectionInfo = $telegramController->getConnectionInfo($_SESSION['user_id']);
+                    
+                    echo '<div class="alert alert-success">';
+                    echo '<p><strong>Telegram подключен!</strong></p>';
+                    echo '<p>Вы будете получать уведомления о предстоящих задачах.</p>';
+                    
+                    if (!empty($connectionInfo['telegram_username'])) {
+                        echo '<p>Имя пользователя: @' . htmlspecialchars($connectionInfo['telegram_username']) . '</p>';
+                    }
+                    
+                    echo '<p>Подключено: ' . date('d.m.Y H:i', strtotime($connectionInfo['created_at'])) . '</p>';
+                    echo '</div>';
+                    
+                    // Кнопка отключения Telegram
+                    echo '<form action="index.php?action=disconnectTelegram" method="POST">';
+                    echo AuthHelper::csrfField();
+                    echo '<button type="submit" class="btn btn-danger">';
+                    echo '<i class="fas fa-unlink"></i> Отключить Telegram';
+                    echo '</button>';
+                    echo '</form>';
+                } else {
+                    // Генерируем код подключения
+                    $connectionCode = $telegramController->generateConnectionCode($_SESSION['user_id']);
+                    
+                    echo '<div class="alert alert-info">';
+                    echo '<p><strong>Подключите Telegram для получения уведомлений!</strong></p>';
+                    echo '<p>1. Откройте нашего бота: <a href="https://t.me/YourBotUsername" target="_blank">@YourBotUsername</a></p>';
+                    echo '<p>2. Отправьте боту команду:</p>';
+                    echo '<div class="input-group mb-3">';
+                    echo '<input type="text" class="form-control" value="/connect ' . $connectionCode . '" id="telegramCode" readonly>';
+                    echo '<button class="btn btn-outline-secondary" type="button" onclick="copyTelegramCode()"><i class="fas fa-copy"></i> Копировать</button>';
+                    echo '</div>';
+                    echo '<p>3. После этого вы начнете получать уведомления о предстоящих задачах</p>';
+                    echo '</div>';
+                    
+                    // JavaScript для копирования кода подключения
+                    echo '<script>';
+                    echo 'function copyTelegramCode() {';
+                    echo '  var code = document.getElementById("telegramCode");';
+                    echo '  code.select();';
+                    echo '  code.setSelectionRange(0, 99999);';
+                    echo '  document.execCommand("copy");';
+                    echo '  showNotification("Успех", "Код скопирован в буфер обмена", "success");';
+                    echo '}';
+                    echo '</script>';
+                }
+                ?>
+            </div>
+        </div>
+
     </div>
 </div>

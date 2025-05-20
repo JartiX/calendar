@@ -47,6 +47,7 @@ CREATE TABLE IF NOT EXISTS tasks (
     user_id INT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    notification_time INT DEFAULT NULL COMMENT 'Минут до задачи для отправки уведомления',
     FOREIGN KEY (type_id) REFERENCES task_types(id),
     FOREIGN KEY (status_id) REFERENCES task_statuses(id),
     FOREIGN KEY (duration_unit_id) REFERENCES duration_units(id),
@@ -81,3 +82,35 @@ INSERT INTO task_priorities (name, color) VALUES
     ('Низкий', '#28a745'),
     ('Средний', '#ffc107'),
     ('Высокий', '#dc3545');
+
+-- Таблица для хранения телеграм данных пользователей
+CREATE TABLE IF NOT EXISTS telegram_users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    telegram_chat_id VARCHAR(255) NOT NULL,
+    telegram_username VARCHAR(255),
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE KEY (user_id, telegram_chat_id)
+);
+
+-- Таблица для отслеживания отправки уведомлений
+CREATE TABLE IF NOT EXISTS notifications (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    task_id INT NOT NULL,
+    notification_type VARCHAR(50) NOT NULL,
+    sent_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (task_id) REFERENCES tasks(id) ON DELETE CASCADE,
+    UNIQUE KEY (task_id, notification_type)
+);
+
+CREATE TABLE IF NOT EXISTS telegram_connection_codes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    connection_code VARCHAR(255) NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE KEY (connection_code)
+);

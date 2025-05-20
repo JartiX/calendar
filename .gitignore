@@ -1,1 +1,5 @@
 config/db_credentials.php
+.env
+*.rar
+config/tg_credentials.php
+*.log

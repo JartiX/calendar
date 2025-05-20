@@ -226,7 +226,11 @@ public function index() {
 
             $this->task->status_id = 1; // По умолчанию - активная задача
             $this->task->user_id = $_SESSION['user_id']; // ID авторизованного пользователя
-            
+                        
+            $this->task->notification_time = isset($_POST['notification_time']) && $_POST['notification_time'] !== '' ? 
+                (int)$_POST['notification_time'] : null;
+
+
             // Проверяем, является ли запрос AJAX
             $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
             
@@ -342,6 +346,9 @@ public function index() {
             $this->task->comments = htmlspecialchars(strip_tags($_POST['comments']));
             $this->task->status_id = htmlspecialchars(strip_tags($_POST['status_id']));
             
+            $this->task->notification_time = isset($_POST['notification_time']) && $_POST['notification_time'] !== '' ? 
+                (int)$_POST['notification_time'] : null;
+
             // Проверяем, является ли запрос AJAX
             $isAjax = isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
             

@@ -108,6 +108,34 @@ include_once 'views/layouts/header.php';
                     </div>
                 </div>
                 
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <h5>Уведомление:</h5>
+                        <p>
+                            <?php 
+                            if (!empty($task_data['notification_time'])) {
+                                $notificationTime = (int)$task_data['notification_time'];
+                                if ($notificationTime == 60) {
+                                    echo 'За 1 час';
+                                } else if ($notificationTime < 60) {
+                                    echo "За {$notificationTime} минут";
+                                } else {
+                                    $hours = floor($notificationTime / 60);
+                                    $minutes = $notificationTime % 60;
+                                    if ($minutes == 0) {
+                                        echo "За {$hours} " . ($hours == 1 ? 'час' : ($hours < 5 ? 'часа' : 'часов'));
+                                    } else {
+                                        echo "За {$hours} " . ($hours == 1 ? 'час' : ($hours < 5 ? 'часа' : 'часов')) . " и {$minutes} минут";
+                                    }
+                                }
+                            } else {
+                                echo 'Не установлено';
+                            }
+                            ?>
+                        </p>
+                    </div>
+                </div>
+
                 <div class="mt-4">
                     <div class="btn-group">
                         <a href="index.php?action=index" class="btn btn-secondary">

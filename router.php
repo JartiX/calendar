@@ -166,6 +166,27 @@ switch($action) {
         $userController->logout();
         break;
         
+    case 'disconnectTelegram':
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['csrf_token']) && AuthHelper::verifyCsrfToken($_POST['csrf_token'])) {
+            require_once 'models/telegram_user.php';
+            require_once 'controllers/telegram_controller.php';
+            
+            $telegramController = new TelegramController($db);
+            $result = $telegramController->disconnectTelegram($_SESSION['user_id']);
+            
+            if ($result) {
+                $_SESSION['success'] = 'Telegram успешно отключен';
+            } else {
+                $_SESSION['error'] = 'Не удалось отключить Telegram';
+            }
+        } else {
+            $_SESSION['error'] = 'Неверный запрос';
+        }
+        
+        header('Location: index.php?action=profile');
+        exit;
+        break;
+
     default:
         $taskController->index();
         break;

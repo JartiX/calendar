@@ -33,6 +33,8 @@ class Task {
     public $user_id;
     public $priority_id;
 
+    public $notification_time;
+
     /**
      * Конструктор класса
      * 
@@ -64,6 +66,7 @@ class Task {
                     comments = :comments, 
                     status_id = :status_id,
                     priority_id = :priority_id,
+                    notification_time = :notification_time,
                     user_id = :user_id";
 
         try {
@@ -90,6 +93,12 @@ class Task {
                 $stmt->bindValue(":priority_id", null, PDO::PARAM_NULL);
             } else {
                 $stmt->bindParam(":priority_id", $this->priority_id);
+            }
+
+            if (empty($this->notification_time)) {
+                $stmt->bindValue(":notification_time", null, PDO::PARAM_NULL);
+            } else {
+                $stmt->bindParam(":notification_time", $this->notification_time);
             }
 
             // Выполнение запроса
@@ -190,6 +199,7 @@ class Task {
                     duration_unit_id = :duration_unit_id,
                     comments = :comments,
                     priority_id = :priority_id,
+                    notification_time = :notification_time,
                     status_id = :status_id
                 WHERE id = :id AND user_id = :user_id";
 
@@ -218,6 +228,12 @@ class Task {
                 $stmt->bindValue(":priority_id", null, PDO::PARAM_NULL);
             } else {
                 $stmt->bindParam(":priority_id", $this->priority_id);
+            }
+
+            if (empty($this->notification_time)) {
+                $stmt->bindValue(":notification_time", null, PDO::PARAM_NULL);
+            } else {
+                $stmt->bindParam(":notification_time", $this->notification_time);
             }
             
             // Выполнение запроса
@@ -857,6 +873,92 @@ class Task {
         } catch (PDOException $e) {
             error_log("Ошибка при подсчете задач по статусу: " . $e->getMessage());
             return 0;
+        }
+    }
+
+    private function setLastQuery($query) {
+        $this->lastQuery = $query;
+    }
+
+    public function getLastQuery() {
+        return $this->lastQuery;
+    }
+
+    /**
+     * Получает задачи, которые нужно уведомить в Telegram
+     * 
+     * @return PDOStatement|false Результат запроса
+     */
+    public function getUpcomingTasksForNotification() {
+        $now = date('Y-m-d H:i:s');
+
+        error_log("Текущее время проверки уведомления: " . $now);
+
+        $query = "SELECT t.*, 
+                tt.name as type_name, 
+                ts.name as status_name, 
+                tu.telegram_chat_id
+            FROM " . $this->table_name . " t
+            JOIN telegram_users tu ON t.user_id = tu.user_id
+            LEFT JOIN task_types tt ON t.type_id = tt.id
+            LEFT JOIN task_statuses ts ON t.status_id = ts.id
+            WHERE t.status_id = 1 
+                AND t.notification_time IS NOT NULL
+                AND tu.is_active = 1
+                AND t.scheduled_date > :now
+                AND NOT EXISTS (
+                    SELECT 1 FROM notifications n 
+                    WHERE n.task_id = t.id AND n.notification_type = 'telegram'
+                )";
+
+        // $query = "SELECT t.*, 
+        //             tt.name as type_name, 
+        //             ts.name as status_name, 
+        //             du.name as duration_unit_name, 
+        //             tp.name as priority_name, 
+        //             tu.telegram_chat_id,
+        //             t.scheduled_date as task_time,
+        //             DATE_SUB(t.scheduled_date, INTERVAL t.notification_time MINUTE) as notification_time
+        //         FROM " . $this->table_name . " t
+        //         LEFT JOIN task_types tt ON t.type_id = tt.id
+        //         LEFT JOIN task_statuses ts ON t.status_id = ts.id
+        //         LEFT JOIN duration_units du ON t.duration_unit_id = du.id
+        //         LEFT JOIN task_priorities tp ON t.priority_id = tp.id
+        //         JOIN telegram_users tu ON t.user_id = tu.user_id
+        //         WHERE t.status_id = 1 
+        //             AND t.notification_time IS NOT NULL
+        //             AND tu.is_active = TRUE
+        //             AND DATE_SUB(t.scheduled_date, INTERVAL t.notification_time MINUTE) <= :now
+        //             AND t.scheduled_date > :now
+        //             AND NOT EXISTS (
+        //                 SELECT 1 FROM notifications n 
+        //                 WHERE n.task_id = t.id AND n.notification_type = 'telegram'
+        //             )";
+        
+        $this->setLastQuery(str_replace(':now', "'" . $now . "'", $query));
+        
+        try {
+            $stmt = $this->conn->prepare($query);
+            $stmt->bindParam(":now", $now);
+            $stmt->execute();
+            
+            error_log("Найдено " . $stmt->rowCount() . " задач для уведомлений");
+            while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                $taskTime = strtotime($row['scheduled_date']);
+                $notificationTime = strtotime('-' . $row['notification_time'] . ' minutes', $taskTime);
+                $nowTime = strtotime($now);
+
+                error_log("ID задачи: " . $row['id'] . 
+                        ", Заголовок: " . $row['title'] . 
+                        ", Время: " . $row['scheduled_date'] . 
+                        ", Время уведомления: " . date('Y-m-d H:i:s', $notificationTime));
+            }
+            $stmt->execute();
+            
+            return $stmt;
+        } catch (PDOException $e) {
+            error_log("Ошибка получения задач для уведомлений: " . $e->getMessage());
+            return false;
         }
     }
 
