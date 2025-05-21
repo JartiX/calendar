@@ -183,7 +183,7 @@ switch($action) {
             $_SESSION['error'] = 'Неверный запрос';
         }
         
-        header('Location: index.php?action=profile');
+        header('Location: index.php?action=index&tab=profile');
         exit;
         break;
 

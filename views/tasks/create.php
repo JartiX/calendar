@@ -83,12 +83,12 @@ if (!isset($db) || !$db) {
                             <label for="priority_id" class="form-label">Приоритет:</label>
                             <select class="form-select" id="priority_id" name="priority_id">
                                 <option value="">Не указан</option>
-                                <?php while($row = $taskPriorities->fetch(PDO::FETCH_ASSOC)): ?>
+                                <?php foreach($taskPriorities as $row): ?>
                                     <option value="<?php echo $row['id']; ?>" 
                                             style="background-color: <?php echo htmlspecialchars($row['color']); ?>">
                                         <?php echo htmlspecialchars($row['name']); ?>
                                     </option>
-                                <?php endwhile; ?>
+                                <?php endforeach; ?>
                             </select>
                         </div>
                         

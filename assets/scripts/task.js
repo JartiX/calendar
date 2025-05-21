@@ -19,9 +19,9 @@ function markTaskStatus(taskId, statusId, refreshCalendar = true, redirectTo = '
     // Определение названия статуса для подтверждения
     let statusName = '';
     switch(statusId) {
-        case 1: statusName = 'активная'; break;
-        case 2: statusName = 'просроченная'; break;
-        case 3: statusName = 'выполненная'; break;
+        case 1: statusName = 'активную'; break;
+        case 2: statusName = 'просроченную'; break;
+        case 3: statusName = 'выполненную'; break;
         default: 
             console.error('Неизвестный статус:', statusId);
             return;
@@ -56,9 +56,9 @@ function updateTaskStatus(taskId, statusId, refreshCalendar, redirectTo) {
     // Определение названия статуса для уведомления
     let statusName = '';
     switch(statusId) {
-        case 1: statusName = 'активную'; break;
-        case 2: statusName = 'просроченную'; break;
-        case 3: statusName = 'выполненную'; break;
+        case 1: statusName = 'активная'; break;
+        case 2: statusName = 'просроченная'; break;
+        case 3: statusName = 'выполненная'; break;
     }
     
     // Отправка запроса на сервер

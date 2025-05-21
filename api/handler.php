@@ -5,16 +5,13 @@
  * Обрабатывает операции изменения статуса и проверки просроченных задач
  */
 
-ini_set('display_errors', 0);
-error_reporting(0);
-
-ob_start();
+ini_set('error_log', __DIR__ . '/logs/php_errors.log');
 
 require_once '../config/database.php';
 require_once '../models/task.php';
 require_once '../helpers/auth_helper.php';
 require_once '../helpers/validation_helper.php';
-require_once '../config/settings.php'; // Добавлено для загрузки настроек сессии
+require_once '../config/settings.php';
 
 // Настраиваем имя сессии перед ее запуском
 session_name(SESSION_NAME);
@@ -23,13 +20,37 @@ session_name(SESSION_NAME);
 session_start();
 
 function returnJson($data) {
-    if (ob_get_length()) ob_end_clean();
+    // Очищаем все возможные буферы вывода
+    while (ob_get_level()) {
+        ob_end_clean();
+    }
     
     header('Content-Type: application/json');
-    
     echo json_encode($data);
     exit;
 }
+
+set_error_handler(function($severity, $message, $file, $line) {
+    throw new ErrorException($message, 0, $severity, $file, $line);
+});
+
+set_exception_handler(function($e) {
+    $response = [
+        'success' => false,
+        'message' => 'Произошла ошибка',
+        'error' => [
+            'message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => $e->getTrace()
+        ]
+    ];
+    
+    header('Content-Type: application/json');
+    http_response_code(500);
+    echo json_encode($response);
+    exit;
+});
 
 // Проверка запроса
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {

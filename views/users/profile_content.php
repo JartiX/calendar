@@ -201,7 +201,7 @@ if (!isset($user_data) || !$user_data) {
                     
                     echo '<div class="alert alert-info">';
                     echo '<p><strong>Подключите Telegram для получения уведомлений!</strong></p>';
-                    echo '<p>1. Откройте нашего бота: <a href="https://t.me/YourBotUsername" target="_blank">@YourBotUsername</a></p>';
+                    echo '<p>1. Откройте нашего бота: <a href="https://t.me/calendar_notfications_bot" target="_blank">@calendar_notfications_bot</a></p>';
                     echo '<p>2. Отправьте боту команду:</p>';
                     echo '<div class="input-group mb-3">';
                     echo '<input type="text" class="form-control" value="/connect ' . $connectionCode . '" id="telegramCode" readonly>';

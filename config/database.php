@@ -5,17 +5,22 @@
  * Управляет подключением к базе данных и предоставляет соединение
  */
 
-require_once 'config/db_credentials.php';
-
 class Database {
     // Параметры подключения
-    private $host = DB_HOST;
-    private $db_name = DB_NAME;
-    private $username = DB_USER;
-    private $password = DB_PASSWORD;
+    private $host;
+    private $db_name;
+    private $username;
+    private $password;
     private $conn;
     private static $instance = null;
 
+    public function __construct() {
+        $this->host = getenv('DB_HOST') ?: 'db';
+        $this->db_name = getenv('DB_NAME') ?: 'task_calendar';
+        $this->username = getenv('DB_USER') ?: 'task_user';
+        $this->password = getenv('DB_PASSWORD') ?: 'task_password';
+    }
+    
     /**
      * Получает соединение с базой данных
      * 

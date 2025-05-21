@@ -9,6 +9,8 @@ $pageTitle = 'Главная';
 
 // Подключаем шапку сайта
 include_once 'views/layouts/header.php';
+
+include_once 'controllers/telegram_controller.php';
 ?>
 
 <!-- Секция поиска -->
@@ -533,6 +535,42 @@ if (isset($_GET['tab'])) {
                                             </option>
                                         <?php endforeach; ?>
                                     </select>
+                                </div>
+                                
+                                <div class="row mb-3">
+                                    <div class="col-md-4">
+                                        <label for="notification_time" class="form-label">Уведомление:</label>
+                                        <select class="form-select" id="notification_time" name="notification_time">
+                                            <option value="">Без уведомления</option>
+                                            <option value="5" <?php echo (isset($task_data) && isset($task_data['notification_time']) && $task_data['notification_time'] == 5) ? 'selected' : ''; ?>>За 5 минут</option>
+                                            <option value="10" <?php echo (isset($task_data) && isset($task_data['notification_time']) && $task_data['notification_time'] == 10) ? 'selected' : ''; ?>>За 10 минут</option>
+                                            <option value="15" <?php echo (isset($task_data) && isset($task_data['notification_time']) && $task_data['notification_time'] == 15) ? 'selected' : ''; ?>>За 15 минут</option>
+                                            <option value="30" <?php echo (isset($task_data) && isset($task_data['notification_time']) && $task_data['notification_time'] == 30) ? 'selected' : ''; ?>>За 30 минут</option>
+                                            <option value="60" <?php echo (isset($task_data) && isset($task_data['notification_time']) && $task_data['notification_time'] == 60) ? 'selected' : ''; ?>>За 1 час</option>
+                                            <option value="120" <?php echo (isset($task_data) && isset($task_data['notification_time']) && $task_data['notification_time'] == 120) ? 'selected' : ''; ?>>За 2 часа</option>
+                                            <option value="180" <?php echo (isset($task_data) && isset($task_data['notification_time']) && $task_data['notification_time'] == 180) ? 'selected' : ''; ?>>За 3 часа</option>
+                                            <option value="360" <?php echo (isset($task_data) && isset($task_data['notification_time']) && $task_data['notification_time'] == 360) ? 'selected' : ''; ?>>За 6 часов</option>
+                                            <option value="720" <?php echo (isset($task_data) && isset($task_data['notification_time']) && $task_data['notification_time'] == 720) ? 'selected' : ''; ?>>За 12 часов</option>
+                                            <option value="1440" <?php echo (isset($task_data) && isset($task_data['notification_time']) && $task_data['notification_time'] == 1440) ? 'selected' : ''; ?>>За 1 день</option>
+                                        </select>
+                                        <?php 
+                                        //  Проверяем подключение к Telegram
+                                        $telegramController = new TelegramController($db);
+                                        $isConnected = $telegramController->isConnected($_SESSION['user_id']);
+                                        
+                                        if (!$isConnected) {
+                                            echo '<div class="form-text text-warning">';
+                                            echo '<i class="fas fa-exclamation-triangle"></i> ';
+                                            echo 'Для получения уведомлений <a href="index.php?action=profile">подключите Telegram</a>.';
+                                            echo '</div>';
+                                        } else {
+                                            echo '<div class="form-text">';
+                                            echo '<i class="fab fa-telegram text-primary"></i> ';
+                                            echo 'Уведомления будут отправлены в Telegram.';
+                                            echo '</div>';
+                                        }
+                                        ?>
+                                    </div>
                                 </div>
                                 
                                 <div class="col-md-8">

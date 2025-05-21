@@ -14,6 +14,13 @@ RUN apt-get update && apt-get install -y \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install -j$(nproc) gd pdo pdo_mysql mysqli zip
 
+RUN apt-get update && apt-get install -y locales && \
+    sed -i 's/# ru_RU.UTF-8 UTF-8/ru_RU.UTF-8 UTF-8/' /etc/locale.gen && \
+    locale-gen ru_RU.UTF-8
+
+ENV LANG ru_RU.UTF-8
+ENV LC_ALL ru_RU.UTF-8
+
 # Update CA certificates
 RUN update-ca-certificates
 
