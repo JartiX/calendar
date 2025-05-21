@@ -1,3 +1,7 @@
+ALTER DATABASE `task_calendar` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+SET NAMES utf8mb4;
+SET CHARACTER SET utf8mb4;
+
 -- Таблица для типов задач
 CREATE TABLE IF NOT EXISTS task_types (
     id INT AUTO_INCREMENT PRIMARY KEY,

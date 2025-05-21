@@ -23,6 +23,10 @@ RUN { \
     echo 'curl.cainfo = /etc/ssl/certs/ca-certificates.crt'; \
 } > /usr/local/etc/php/conf.d/ssl-cainfo.ini
 
+# Установка кодировки для Apache
+RUN echo 'AddDefaultCharset UTF-8' > /etc/apache2/conf-available/charset.conf && \
+    a2enconf charset
+
 # Enable Apache modules
 RUN a2enmod rewrite
 
