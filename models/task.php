@@ -905,53 +905,27 @@ class Task {
             WHERE t.status_id = 1 
                 AND t.notification_time IS NOT NULL
                 AND tu.is_active = 1
-                AND t.scheduled_date > :now
+                AND now() BETWEEN DATE_SUB(t.scheduled_date, INTERVAL t.notification_time MINUTE) AND t.scheduled_date
                 AND NOT EXISTS (
                     SELECT 1 FROM notifications n 
                     WHERE n.task_id = t.id AND n.notification_type = 'telegram'
                 )";
+                
+        $this->setLastQuery($query);
 
-        // $query = "SELECT t.*, 
-        //             tt.name as type_name, 
-        //             ts.name as status_name, 
-        //             du.name as duration_unit_name, 
-        //             tp.name as priority_name, 
-        //             tu.telegram_chat_id,
-        //             t.scheduled_date as task_time,
-        //             DATE_SUB(t.scheduled_date, INTERVAL t.notification_time MINUTE) as notification_time
-        //         FROM " . $this->table_name . " t
-        //         LEFT JOIN task_types tt ON t.type_id = tt.id
-        //         LEFT JOIN task_statuses ts ON t.status_id = ts.id
-        //         LEFT JOIN duration_units du ON t.duration_unit_id = du.id
-        //         LEFT JOIN task_priorities tp ON t.priority_id = tp.id
-        //         JOIN telegram_users tu ON t.user_id = tu.user_id
-        //         WHERE t.status_id = 1 
-        //             AND t.notification_time IS NOT NULL
-        //             AND tu.is_active = TRUE
-        //             AND DATE_SUB(t.scheduled_date, INTERVAL t.notification_time MINUTE) <= :now
-        //             AND t.scheduled_date > :now
-        //             AND NOT EXISTS (
-        //                 SELECT 1 FROM notifications n 
-        //                 WHERE n.task_id = t.id AND n.notification_type = 'telegram'
-        //             )";
-        
-        $this->setLastQuery(str_replace(':now', "'" . $now . "'", $query));
-        
         try {
             $stmt = $this->conn->prepare($query);
-            $stmt->bindParam(":now", $now);
             $stmt->execute();
-            
+
             error_log("Найдено " . $stmt->rowCount() . " задач для уведомлений");
             while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 $taskTime = strtotime($row['scheduled_date']);
-                $notificationTime = strtotime('-' . $row['notification_time'] . ' minutes', $taskTime);
-                $nowTime = strtotime($now);
+                $notificationTime = date('Y-m-d H:i:s', strtotime("-{$row['notification_time']} minutes", $taskTime));
 
                 error_log("ID задачи: " . $row['id'] . 
                         ", Заголовок: " . $row['title'] . 
                         ", Время: " . $row['scheduled_date'] . 
-                        ", Время уведомления: " . date('Y-m-d H:i:s', $notificationTime));
+                        ", Время уведомления: " . $notificationTime);
             }
             $stmt->execute();
             
